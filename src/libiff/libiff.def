@@ -118,3 +118,5 @@ EXPORTS
 	IFF_printRawChunk         @116
 	IFF_compareRawChunk       @117
 	IFF_printIndent           @118
+	IFF_readReader            @119
+	IFF_writeWriter           @120

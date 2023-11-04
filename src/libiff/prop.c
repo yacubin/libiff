@@ -40,12 +40,12 @@ void IFF_addToProp(IFF_Prop *prop, IFF_Chunk *chunk)
     IFF_addToForm((IFF_Form*)prop, chunk);
 }
 
-IFF_Prop *IFF_readProp(FILE *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength)
+IFF_Prop *IFF_readProp(IFF_Reader *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     return (IFF_Prop*)IFF_readGroup(file, PROP_CHUNKID, chunkSize, PROP_GROUPTYPENAME, TRUE, extension, extensionLength);
 }
 
-int IFF_writeProp(FILE *file, const IFF_Prop *prop, const IFF_Extension *extension, const unsigned int extensionLength)
+int IFF_writeProp(IFF_Writer *file, const IFF_Prop *prop, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     return IFF_writeForm(file, (IFF_Form*)prop, extension, extensionLength);
 }

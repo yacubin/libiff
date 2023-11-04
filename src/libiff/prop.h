@@ -24,7 +24,6 @@
 
 typedef struct IFF_Form IFF_Prop;
 
-#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 #include "form.h"
@@ -61,7 +60,7 @@ void IFF_addToProp(IFF_Prop *prop, IFF_Chunk *chunk);
  * @param extensionLength Length of the extension array
  * @return The PROP struct derived from the file, or NULL if an error has occured
  */
-IFF_Prop *IFF_readProp(FILE *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
+IFF_Prop *IFF_readProp(IFF_Reader *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes a PROP chunk and its sub chunks to a file.
@@ -72,7 +71,7 @@ IFF_Prop *IFF_readProp(FILE *file, const IFF_Long chunkSize, const IFF_Extension
  * @param extensionLength Length of the extension array
  * @return TRUE if the PROP has been successfully written, else FALSE
  */
-int IFF_writeProp(FILE *file, const IFF_Prop *prop, const IFF_Extension *extension, const unsigned int extensionLength);
+int IFF_writeProp(IFF_Writer *file, const IFF_Prop *prop, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Checks whether the PROP chunk and its sub chunks conform to the IFF specification.

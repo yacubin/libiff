@@ -52,7 +52,7 @@ void IFF_setTextData(IFF_RawChunk *rawChunk, const char *text)
     IFF_setRawChunkData(rawChunk, chunkData, textLength);
 }
 
-IFF_RawChunk *IFF_readRawChunk(FILE *file, const char *chunkId, const IFF_Long chunkSize)
+IFF_RawChunk *IFF_readRawChunk(IFF_Reader *file, const char *chunkId, const IFF_Long chunkSize)
 {
     IFF_RawChunk *rawChunk = IFF_createRawChunk(chunkId);
     IFF_UByte *chunkData = (IFF_UByte*)malloc(chunkSize * sizeof(IFF_UByte));
@@ -63,7 +63,7 @@ IFF_RawChunk *IFF_readRawChunk(FILE *file, const char *chunkId, const IFF_Long c
 	
     /* Read remaining bytes verbatim */
 	
-    if(fread(chunkData, sizeof(IFF_UByte), chunkSize, file) < chunkSize)
+    if(IFF_readData(file, chunkData, chunkSize) != TRUE)
     {
 	IFF_error("Error reading raw chunk body of chunk: '");
 	IFF_errorId(chunkId);
@@ -73,7 +73,7 @@ IFF_RawChunk *IFF_readRawChunk(FILE *file, const char *chunkId, const IFF_Long c
     }
 	    
     /* If the chunk size is odd, we have to read the padding byte */
-    if(!IFF_readPaddingByte(file, chunkSize, chunkId))
+    if(IFF_readPaddingByte(file, chunkSize, chunkId) != TRUE)
     {
 	IFF_freeChunk((IFF_Chunk*)rawChunk, NULL, NULL, 0);
 	return NULL;
@@ -86,9 +86,9 @@ IFF_RawChunk *IFF_readRawChunk(FILE *file, const char *chunkId, const IFF_Long c
     return rawChunk;
 }
 
-int IFF_writeRawChunk(FILE *file, const IFF_RawChunk *rawChunk)
+int IFF_writeRawChunk(IFF_Writer *file, const IFF_RawChunk *rawChunk)
 {
-    if(fwrite(rawChunk->chunkData, sizeof(IFF_UByte), rawChunk->chunkSize, file) < rawChunk->chunkSize)
+    if(IFF_writeData(file, rawChunk->chunkData, rawChunk->chunkSize) != TRUE)
     {
 	IFF_error("Error writing raw chunk body of chunk '");
 	IFF_errorId(rawChunk->chunkId);

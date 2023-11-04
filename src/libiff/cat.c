@@ -38,12 +38,12 @@ void IFF_addToCAT(IFF_CAT *cat, IFF_Chunk *chunk)
     IFF_addToGroup((IFF_Group*)cat, chunk);
 }
 
-IFF_CAT *IFF_readCAT(FILE *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength)
+IFF_CAT *IFF_readCAT(IFF_Reader *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     return (IFF_CAT*)IFF_readGroup(file, CAT_CHUNKID, chunkSize, CAT_GROUPTYPENAME, FALSE, extension, extensionLength);
 }
 
-int IFF_writeCAT(FILE *file, const IFF_CAT *cat, const IFF_Extension *extension, const unsigned int extensionLength)
+int IFF_writeCAT(IFF_Writer *file, const IFF_CAT *cat, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     return IFF_writeGroup(file, (IFF_Group*)cat, NULL, CAT_GROUPTYPENAME, extension, extensionLength);
 }

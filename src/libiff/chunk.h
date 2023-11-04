@@ -24,7 +24,7 @@
 
 typedef struct IFF_Chunk IFF_Chunk;
 
-#include <stdio.h>
+#include <stdlib.h>
 #include "ifftypes.h"
 #include "extension.h"
 #include "group.h"
@@ -68,7 +68,7 @@ IFF_Chunk *IFF_allocateChunk(const char *chunkId, const size_t chunkSize);
  * @param extensionLength Length of the extension array
  * @return A chunk hierarchy derived from the IFF file, or NULL if an error occurs
  */
-IFF_Chunk *IFF_readChunk(FILE *file, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength);
+IFF_Chunk *IFF_readChunk(IFF_Reader *reader, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes a chunk hierarchy to a given file descriptor.
@@ -80,7 +80,7 @@ IFF_Chunk *IFF_readChunk(FILE *file, const char *formType, const IFF_Extension *
  * @param extensionLength Length of the extension array
  * @return TRUE if the file has been successfully written, else FALSE
  */
-int IFF_writeChunk(FILE *file, const IFF_Chunk *chunk, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength);
+int IFF_writeChunk(IFF_Writer *file, const IFF_Chunk *chunk, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Checks whether a chunk hierarchy conforms to the IFF specification.

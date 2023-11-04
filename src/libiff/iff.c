@@ -25,11 +25,46 @@
 #include "id.h"
 #include "util.h"
 #include "error.h"
+#include "io.h"
 
-IFF_Chunk *IFF_readFd(FILE *file, const IFF_Extension *extension, const unsigned int extensionLength)
+struct IFF_FileReader {
+    IFF_Reader base;
+    FILE *file;
+};
+
+struct IFF_FileWriter {
+    IFF_Writer base;
+    FILE *file;
+};
+
+static int IFF_fileRead(IFF_Reader *reader, void *data, IFF_ULong size)
+{
+    struct IFF_FileReader *fileReader = (struct IFF_FileReader *)reader;
+    if(fread(data, sizeof(IFF_UByte), size, fileReader->file) == size)
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+static const struct IFF_ReaderCallbacks s_readerCallbacks =
+{
+    &IFF_fileRead,
+};
+
+static void IFF_initFileReader(struct IFF_FileReader *fileReader, FILE *file)
+{
+    fileReader->base.callbacks = &s_readerCallbacks;
+    fileReader->file = file;
+}
+
+IFF_Chunk *IFF_readReader(IFF_Reader *file, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     IFF_Chunk *chunk;
-    int byte;
+    IFF_UByte byte;
     
     /* Read the chunk */
     chunk = IFF_readChunk(file, NULL, extension, extensionLength);
@@ -41,12 +76,19 @@ IFF_Chunk *IFF_readFd(FILE *file, const IFF_Extension *extension, const unsigned
     }
     
     /* We should have reached the EOF now */
-    
-    if((byte = fgetc(file)) != EOF)
+
+    if (IFF_readData(file, &byte, sizeof(IFF_UByte)) != FALSE)
         IFF_error("WARNING: Trailing IFF contents found: %d!\n", byte);
 
     /* Return the parsed main chunk */
     return chunk;
+}
+
+IFF_Chunk *IFF_readFd(FILE *file, const IFF_Extension *extension, const unsigned int extensionLength)
+{
+  struct IFF_FileReader fileReader;
+  IFF_initFileReader(&fileReader, file);
+  return IFF_readReader(&fileReader.base, extension, extensionLength);
 }
 
 IFF_Chunk *IFF_read(const char *filename, const IFF_Extension *extension, const unsigned int extensionLength)
@@ -71,9 +113,40 @@ IFF_Chunk *IFF_read(const char *filename, const IFF_Extension *extension, const 
     return chunk;
 }
 
-int IFF_writeFd(FILE *file, const IFF_Chunk *chunk, const IFF_Extension *extension, const unsigned int extensionLength)
+static int IFF_fileWrite(IFF_Writer *writer, const void *data, IFF_ULong size)
+{
+    struct IFF_FileWriter *fileWriter = (struct IFF_FileWriter *)writer;
+    if(fwrite(data, sizeof(IFF_UByte), size, fileWriter->file) == size)
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+static const struct IFF_WriterCallbacks s_writerCallbacks =
+{
+    &IFF_fileWrite,
+};
+
+static void IFF_initFileWriter(struct IFF_FileWriter *fileWriter, FILE *file)
+{
+    fileWriter->base.callbacks = &s_writerCallbacks;
+    fileWriter->file = file;
+}
+
+int IFF_writeWriter(IFF_Writer *file, const IFF_Chunk *chunk, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     return IFF_writeChunk(file, chunk, NULL, extension, extensionLength);
+}
+
+int IFF_writeFd(FILE *file, const IFF_Chunk *chunk, const IFF_Extension *extension, const unsigned int extensionLength)
+{
+    struct IFF_FileWriter fileWriter;
+    IFF_initFileWriter(&fileWriter, file);
+    return IFF_writeWriter(&fileWriter.base, chunk, extension, extensionLength);
 }
 
 int IFF_write(const char *filename, const IFF_Chunk *chunk, const IFF_Extension *extension, const unsigned int extensionLength)
@@ -86,7 +159,7 @@ int IFF_write(const char *filename, const IFF_Chunk *chunk, const IFF_Extension 
         IFF_error("ERROR: cannot open file: %s\n", filename);
         return FALSE;
     }
-    
+
     status = IFF_writeFd(file, chunk, extension, extensionLength);
     fclose(file);
     return status;

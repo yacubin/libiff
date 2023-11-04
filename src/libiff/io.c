@@ -22,25 +22,24 @@
 #include "io.h"
 #include "error.h"
 
-int IFF_readUByte(FILE *file, IFF_UByte *value, const IFF_ID chunkId, const char *attributeName)
+int IFF_readUByte(IFF_Reader *file, IFF_UByte *value, const IFF_ID chunkId, const char *attributeName)
 {
-    int byte = fgetc(file);
-    
-    if(byte == EOF)
+    IFF_UByte byte;
+    if(IFF_readData(file, &byte, sizeof(IFF_UByte)) != TRUE)
     {
 	IFF_readError(chunkId, attributeName);
 	return FALSE;
     }
     else
     {
-	*value = byte;
+  *value = byte;
 	return TRUE;
     }
 }
 
-int IFF_writeUByte(FILE *file, const IFF_UByte value, const IFF_ID chunkId, const char *attributeName)
+int IFF_writeUByte(IFF_Writer *file, const IFF_UByte value, const IFF_ID chunkId, const char *attributeName)
 {
-    if(fputc(value, file) == EOF)
+    if(IFF_writeData(file, &value, sizeof(IFF_UByte)) != TRUE)
     {
 	IFF_writeError(chunkId, attributeName);
 	return FALSE;
@@ -49,11 +48,11 @@ int IFF_writeUByte(FILE *file, const IFF_UByte value, const IFF_ID chunkId, cons
 	return TRUE;
 }
 
-int IFF_readUWord(FILE *file, IFF_UWord *value, const IFF_ID chunkId, const char *attributeName)
+int IFF_readUWord(IFF_Reader *file, IFF_UWord *value, const IFF_ID chunkId, const char *attributeName)
 {
     IFF_UWord readUWord;
-    
-    if(fread(&readUWord, sizeof(IFF_UWord), 1, file) == 1)
+
+    if(IFF_readData(file, &readUWord, sizeof(IFF_UWord)) == TRUE)
     {
 #if IFF_BIG_ENDIAN == 1
 	*value = readUWord;
@@ -71,7 +70,7 @@ int IFF_readUWord(FILE *file, IFF_UWord *value, const IFF_ID chunkId, const char
     }
 }
 
-int IFF_writeUWord(FILE *file, const IFF_UWord value, const IFF_ID chunkId, const char *attributeName)
+int IFF_writeUWord(IFF_Writer *file, const IFF_UWord value, const IFF_ID chunkId, const char *attributeName)
 {
 #if IFF_BIG_ENDIAN == 1
     IFF_UWord writeUWord = value;
@@ -80,7 +79,7 @@ int IFF_writeUWord(FILE *file, const IFF_UWord value, const IFF_ID chunkId, cons
     IFF_UWord writeUWord = (value & 0xff) << 8 | (value & 0xff00) >> 8;
 #endif
 
-    if(fwrite(&writeUWord, sizeof(IFF_UWord), 1, file) == 1)
+    if(IFF_writeData(file, &writeUWord, sizeof(IFF_UWord)) == TRUE)
 	return TRUE;
     else
     {
@@ -89,11 +88,11 @@ int IFF_writeUWord(FILE *file, const IFF_UWord value, const IFF_ID chunkId, cons
     }
 }
 
-int IFF_readWord(FILE *file, IFF_Word *value, const IFF_ID chunkId, const char *attributeName)
+int IFF_readWord(IFF_Reader *file, IFF_Word *value, const IFF_ID chunkId, const char *attributeName)
 {
     IFF_Word readWord;
-    
-    if(fread(&readWord, sizeof(IFF_Word), 1, file) == 1)
+
+    if(IFF_readData(file, &readWord, sizeof(IFF_Word)) == TRUE)
     {
 #if IFF_BIG_ENDIAN == 1
 	*value = readWord;
@@ -110,7 +109,7 @@ int IFF_readWord(FILE *file, IFF_Word *value, const IFF_ID chunkId, const char *
     }
 }
 
-int IFF_writeWord(FILE *file, const IFF_Word value, const IFF_ID chunkId, const char *attributeName)
+int IFF_writeWord(IFF_Writer *file, const IFF_Word value, const IFF_ID chunkId, const char *attributeName)
 {
 #if IFF_BIG_ENDIAN == 1
     IFF_Word writeWord = value;
@@ -118,7 +117,7 @@ int IFF_writeWord(FILE *file, const IFF_Word value, const IFF_ID chunkId, const 
     IFF_Word writeWord = (value & 0xff) << 8 | (value & 0xff00) >> 8;
 #endif
 
-    if(fwrite(&writeWord, sizeof(IFF_Word), 1, file) == 1)
+    if(IFF_writeData(file, &writeWord, sizeof(IFF_Word)) == TRUE)
 	return TRUE;
     else
     {
@@ -127,11 +126,11 @@ int IFF_writeWord(FILE *file, const IFF_Word value, const IFF_ID chunkId, const 
     }
 }
 
-int IFF_readULong(FILE* file, IFF_ULong *value, const IFF_ID chunkId, const char *attributeName)
+int IFF_readULong(IFF_Reader *file, IFF_ULong *value, const IFF_ID chunkId, const char *attributeName)
 {
     IFF_ULong readValue;
-    
-    if(fread(&readValue, sizeof(IFF_ULong), 1, file) == 1)
+
+    if(IFF_readData(file, &readValue, sizeof(IFF_ULong)) == TRUE)
     {
 #if IFF_BIG_ENDIAN == 1
 	*value = readValue;
@@ -148,7 +147,7 @@ int IFF_readULong(FILE* file, IFF_ULong *value, const IFF_ID chunkId, const char
     }
 }
 
-int IFF_writeULong(FILE *file, const IFF_ULong value, const IFF_ID chunkId, const char *attributeName)
+int IFF_writeULong(IFF_Writer *file, const IFF_ULong value, const IFF_ID chunkId, const char *attributeName)
 {
 #if IFF_BIG_ENDIAN == 1
     IFF_ULong writeValue = value;
@@ -157,7 +156,7 @@ int IFF_writeULong(FILE *file, const IFF_ULong value, const IFF_ID chunkId, cons
     IFF_ULong writeValue = (value & 0xff) << 24 | (value & 0xff00) << 8 | (value & 0xff0000) >> 8 | (value & 0xff000000) >> 24;
 #endif
 
-    if(fwrite(&writeValue, sizeof(IFF_ULong), 1, file) == 1)
+    if(IFF_writeData(file, &writeValue, sizeof(IFF_ULong)) == TRUE)
 	return TRUE;
     else
     {
@@ -166,11 +165,11 @@ int IFF_writeULong(FILE *file, const IFF_ULong value, const IFF_ID chunkId, cons
     }
 }
 
-int IFF_readLong(FILE* file, IFF_Long *value, const IFF_ID chunkId, const char *attributeName)
+int IFF_readLong(IFF_Reader *file, IFF_Long *value, const IFF_ID chunkId, const char *attributeName)
 {
     IFF_Long readValue;
-    
-    if(fread(&readValue, sizeof(IFF_Long), 1, file) == 1)
+
+    if(IFF_readData(file, &readValue, sizeof(IFF_Long)) == TRUE)
     {
 #if IFF_BIG_ENDIAN == 1
 	*value = readValue;
@@ -187,7 +186,7 @@ int IFF_readLong(FILE* file, IFF_Long *value, const IFF_ID chunkId, const char *
     }
 }
 
-int IFF_writeLong(FILE *file, const IFF_Long value, const IFF_ID chunkId, const char *attributeName)
+int IFF_writeLong(IFF_Writer *file, const IFF_Long value, const IFF_ID chunkId, const char *attributeName)
 {
 #if IFF_BIG_ENDIAN == 1
     IFF_Long writeValue = value;
@@ -196,7 +195,7 @@ int IFF_writeLong(FILE *file, const IFF_Long value, const IFF_ID chunkId, const 
     IFF_Long writeValue = (value & 0xff) << 24 | (value & 0xff00) << 8 | (value & 0xff0000) >> 8 | (value & 0xff000000) >> 24;
 #endif
 
-    if(fwrite(&writeValue, sizeof(IFF_Long), 1, file) == 1)
+    if(IFF_writeData(file, &writeValue, sizeof(IFF_Long)) == TRUE)
 	return TRUE;
     else
     {
@@ -205,13 +204,13 @@ int IFF_writeLong(FILE *file, const IFF_Long value, const IFF_ID chunkId, const 
     }
 }
 
-int IFF_readPaddingByte(FILE *file, const IFF_Long chunkSize, const IFF_ID chunkId)
+int IFF_readPaddingByte(IFF_Reader *file, const IFF_Long chunkSize, const IFF_ID chunkId)
 {
     if(chunkSize % 2 != 0) /* Check whether the chunk size is an odd number */
     {
-        int byte = fgetc(file); /* Read padding byte */
-	
-        if(byte == EOF) /* We shouldn't have reached the EOF yet */
+        IFF_UByte byte;
+        /* Read padding byte */
+        if(IFF_readData(file, &byte, sizeof(IFF_UByte)) != TRUE) /* We shouldn't have reached the EOF yet */
         {
     	    IFF_error("Unexpected end of file, while reading padding byte of '");
     	    IFF_errorId(chunkId);
@@ -225,11 +224,13 @@ int IFF_readPaddingByte(FILE *file, const IFF_Long chunkSize, const IFF_ID chunk
     return TRUE;
 }
 
-int IFF_writePaddingByte(FILE *file, const IFF_Long chunkSize, const IFF_ID chunkId)
+int IFF_writePaddingByte(IFF_Writer *file, const IFF_Long chunkSize, const IFF_ID chunkId)
 {
+    IFF_UByte byte;
     if(chunkSize % 2 != 0) /* Check whether the chunk size is an odd number */
     {
-	if(fputc('\0', file) == EOF)
+        byte = '\0';
+  if(IFF_writeData(file, &byte, sizeof(IFF_UByte)) != TRUE)
 	{
 	    IFF_error("Cannot write padding byte of '");
 	    IFF_errorId(chunkId);

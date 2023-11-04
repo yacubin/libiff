@@ -45,7 +45,7 @@ IFF_Chunk *IFF_allocateChunk(const char *chunkId, const size_t chunkSize)
     return chunk;
 }
 
-IFF_Chunk *IFF_readChunk(FILE *file, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength)
+IFF_Chunk *IFF_readChunk(IFF_Reader *file, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     IFF_ID chunkId;
     IFF_Long chunkSize;
@@ -79,7 +79,7 @@ IFF_Chunk *IFF_readChunk(FILE *file, const char *formType, const IFF_Extension *
     }
 }
 
-int IFF_writeChunk(FILE *file, const IFF_Chunk *chunk, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength)
+int IFF_writeChunk(IFF_Writer *file, const IFF_Chunk *chunk, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     if(!IFF_writeId(file, chunk->chunkId, chunk->chunkId, "chunkId"))
 	return FALSE;

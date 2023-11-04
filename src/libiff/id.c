@@ -21,7 +21,9 @@
 
 #include "id.h"
 #include <string.h>
+#include <stdio.h>
 #include "error.h"
+#include "io.h"
 
 void IFF_createId(IFF_ID id, const char *idString)
 {
@@ -33,9 +35,9 @@ int IFF_compareId(const IFF_ID id1, const char* id2)
     return strncmp(id1, id2, IFF_ID_SIZE);
 }
 
-int IFF_readId(FILE *file, IFF_ID id, const IFF_ID chunkId, const char *attributeName)
+int IFF_readId(IFF_Reader *file, IFF_ID id, const IFF_ID chunkId, const char *attributeName)
 {
-    if(fread(id, IFF_ID_SIZE, 1, file) == 1)
+    if(IFF_readData(file, id, IFF_ID_SIZE) == TRUE)
 	return TRUE;
     else
     {
@@ -44,9 +46,9 @@ int IFF_readId(FILE *file, IFF_ID id, const IFF_ID chunkId, const char *attribut
     }
 }
 
-int IFF_writeId(FILE *file, const IFF_ID id, const IFF_ID chunkId, const char *attributeName)
+int IFF_writeId(IFF_Writer *file, const IFF_ID id, const IFF_ID chunkId, const char *attributeName)
 {
-    if(fwrite(id, IFF_ID_SIZE, 1, file) == 1)
+    if(IFF_writeData(file, id, IFF_ID_SIZE) == TRUE)
 	return TRUE;
     else
     {

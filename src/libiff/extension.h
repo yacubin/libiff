@@ -25,7 +25,6 @@
 typedef struct IFF_FormExtension IFF_FormExtension;
 typedef struct IFF_Extension IFF_Extension;
 
-#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 
@@ -42,10 +41,10 @@ struct IFF_FormExtension
     const char *chunkId;
     
     /** Function resposible for reading the given chunk */
-    IFF_Chunk* (*readChunk) (FILE *file, const IFF_Long chunkSize);
+    IFF_Chunk* (*readChunk) (IFF_Reader *file, const IFF_Long chunkSize);
     
     /** Function resposible for writing the given chunk */
-    int (*writeChunk) (FILE *file, const IFF_Chunk *chunk);
+    int (*writeChunk) (IFF_Writer *file, const IFF_Chunk *chunk);
     
     /** Function resposible for checking the given chunk */
     int (*checkChunk) (const IFF_Chunk *chunk);

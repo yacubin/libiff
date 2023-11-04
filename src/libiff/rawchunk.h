@@ -24,7 +24,6 @@
 
 typedef struct IFF_RawChunk IFF_RawChunk;
 
-#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 
@@ -84,7 +83,7 @@ void IFF_setTextData(IFF_RawChunk *rawChunk, const char *text);
  * @param chunkSize Size of the chunk data
  * @return The raw chunk struct derived from the file, or NULL if an error has occured
  */
-IFF_RawChunk *IFF_readRawChunk(FILE *file, const char *chunkId, const IFF_Long chunkSize);
+IFF_RawChunk *IFF_readRawChunk(IFF_Reader *file, const char *chunkId, const IFF_Long chunkSize);
 
 /**
  * Writes the given raw chunk to a file descriptor.
@@ -93,7 +92,7 @@ IFF_RawChunk *IFF_readRawChunk(FILE *file, const char *chunkId, const IFF_Long c
  * @param rawChunk A raw chunk instance
  * @return TRUE if the chunk has been successfully written, else FALSE
  */
-int IFF_writeRawChunk(FILE *file, const IFF_RawChunk *rawChunk);
+int IFF_writeRawChunk(IFF_Writer *file, const IFF_RawChunk *rawChunk);
 
 /**
  * Frees the raw chunk data of the given raw chunk.

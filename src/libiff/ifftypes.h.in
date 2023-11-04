@@ -45,6 +45,9 @@ typedef unsigned int IFF_ULong;
 /** A 4 byte ID type */
 typedef char IFF_ID[IFF_ID_SIZE];
 
+typedef struct IFF_Reader IFF_Reader;
+typedef struct IFF_Writer IFF_Writer;
+
 #define TRUE 1
 #define FALSE 0
 

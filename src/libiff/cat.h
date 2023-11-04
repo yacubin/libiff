@@ -24,7 +24,6 @@
 
 typedef struct IFF_CAT IFF_CAT;
 
-#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 
@@ -89,7 +88,7 @@ void IFF_addToCAT(IFF_CAT *cat, IFF_Chunk *chunk);
  * @param extensionLength Length of the extension array
  * @return The concation struct derived from the file, or NULL if an error has occured
  */
-IFF_CAT *IFF_readCAT(FILE *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
+IFF_CAT *IFF_readCAT(IFF_Reader *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes a concatenation chunk and its sub chunks to a file.
@@ -100,7 +99,7 @@ IFF_CAT *IFF_readCAT(FILE *file, const IFF_Long chunkSize, const IFF_Extension *
  * @param extensionLength Length of the extension array
  * @return TRUE if the CAT has been successfully written, else FALSE
  */
-int IFF_writeCAT(FILE *file, const IFF_CAT *cat, const IFF_Extension *extension, const unsigned int extensionLength);
+int IFF_writeCAT(IFF_Writer *file, const IFF_CAT *cat, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Checks a sub chunk in a CAT for its validity.

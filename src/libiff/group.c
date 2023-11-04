@@ -53,7 +53,7 @@ void IFF_addToGroup(IFF_Group *group, IFF_Chunk *chunk)
     chunk->parent = group;
 }
 
-IFF_Group *IFF_readGroup(FILE *file, const char *chunkId, const IFF_Long chunkSize, const char *groupTypeName, const int groupTypeIsFormType, const IFF_Extension *extension, const unsigned int extensionLength)
+IFF_Group *IFF_readGroup(IFF_Reader *file, const char *chunkId, const IFF_Long chunkSize, const char *groupTypeName, const int groupTypeIsFormType, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     IFF_ID groupType;
     IFF_Group *group;
@@ -101,7 +101,7 @@ IFF_Group *IFF_readGroup(FILE *file, const char *chunkId, const IFF_Long chunkSi
     return group;
 }
 
-int IFF_writeGroupSubChunks(FILE *file, const IFF_Group *group, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength)
+int IFF_writeGroupSubChunks(IFF_Writer *file, const IFF_Group *group, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     unsigned int i;
     
@@ -117,7 +117,7 @@ int IFF_writeGroupSubChunks(FILE *file, const IFF_Group *group, const char *form
     return TRUE;
 }
 
-int IFF_writeGroup(FILE *file, const IFF_Group *group, const char *formType, const char *groupTypeName, const IFF_Extension *extension, const unsigned int extensionLength)
+int IFF_writeGroup(IFF_Writer *file, const IFF_Group *group, const char *formType, const char *groupTypeName, const IFF_Extension *extension, const unsigned int extensionLength)
 {
     if(!IFF_writeId(file, group->groupType, group->chunkId, groupTypeName))
 	return FALSE;

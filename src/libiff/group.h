@@ -24,7 +24,6 @@
 
 typedef struct IFF_Group IFF_Group;
 
-#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 #include "form.h"
@@ -97,7 +96,7 @@ void IFF_addToGroup(IFF_Group *group, IFF_Chunk *chunk);
  * @param extensionLength Length of the extension array
  * @return The group struct derived from the file, or NULL if an error has occured
  */
-IFF_Group *IFF_readGroup(FILE *file, const char *chunkId, const IFF_Long chunkSize, const char *groupTypeName, const int groupTypeIsFormType, const IFF_Extension *extension, const unsigned int extensionLength);
+IFF_Group *IFF_readGroup(IFF_Reader *file, const char *chunkId, const IFF_Long chunkSize, const char *groupTypeName, const int groupTypeIsFormType, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes all sub chunks inside a group to a file.
@@ -109,7 +108,7 @@ IFF_Group *IFF_readGroup(FILE *file, const char *chunkId, const IFF_Long chunkSi
  * @param extensionLength Length of the extension array
  * @return TRUE if the sub chunks have been successfully written, else FALSE
  */
-int IFF_writeGroupSubChunks(FILE *file, const IFF_Group *group, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength);
+int IFF_writeGroupSubChunks(IFF_Writer *file, const IFF_Group *group, const char *formType, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes a group chunk and its sub chunks to a file.
@@ -122,7 +121,7 @@ int IFF_writeGroupSubChunks(FILE *file, const IFF_Group *group, const char *form
  * @param extensionLength Length of the extension array
  * @return TRUE if the group has been successfully written, else FALSE
  */
-int IFF_writeGroup(FILE *file, const IFF_Group *group, const char *formType, const char *groupTypeName, const IFF_Extension *extension, const unsigned int extensionLength);
+int IFF_writeGroup(IFF_Writer *file, const IFF_Group *group, const char *formType, const char *groupTypeName, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Checks whether the given chunk size matches the chunk size of the group

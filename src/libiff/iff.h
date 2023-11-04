@@ -22,12 +22,23 @@
 #ifndef __IFF_H
 #define __IFF_H
 
+#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * Reads an IFF file from a given file reader. The resulting chunk must be freed using IFF_free().
+ *
+ * @param file File reader of the stream
+ * @param extension Extension array which specifies how application file format chunks can be handled
+ * @param extensionLength Length of the extension array
+ * @return A chunk hierarchy derived from the IFF file, or NULL if an error occurs
+ */
+IFF_Chunk *IFF_readReader(IFF_Reader *file, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Reads an IFF file from a given file descriptor. The resulting chunk must be freed using IFF_free().
@@ -48,6 +59,17 @@ IFF_Chunk *IFF_readFd(FILE *file, const IFF_Extension *extension, const unsigned
  * @return A chunk hierarchy derived from the IFF file, or NULL if an error occurs
  */
 IFF_Chunk *IFF_read(const char *filename, const IFF_Extension *extension, const unsigned int extensionLength);
+
+/**
+ * Writes an IFF file to a given file writer.
+ *
+ * @param file File writer of the stream
+ * @param chunk A chunk hierarchy representing an IFF file
+ * @param extension Extension array which specifies how application file format chunks can be handled
+ * @param extensionLength Length of the extension array
+ * @return TRUE if the file has been successfully written, else FALSE
+ */
+int IFF_writeWriter(IFF_Writer *file, const IFF_Chunk *chunk, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes an IFF file to a given file descriptor.

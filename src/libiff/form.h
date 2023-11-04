@@ -24,7 +24,6 @@
 
 typedef struct IFF_Form IFF_Form;
 
-#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 
@@ -87,7 +86,7 @@ void IFF_addToForm(IFF_Form *form, IFF_Chunk *chunk);
  * @param extensionLength Length of the extension array
  * @return The form struct derived from the file, or NULL if an error has occured
  */
-IFF_Form *IFF_readForm(FILE *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
+IFF_Form *IFF_readForm(IFF_Reader *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes a form chunk and its sub chunks to a file.
@@ -98,7 +97,7 @@ IFF_Form *IFF_readForm(FILE *file, const IFF_Long chunkSize, const IFF_Extension
  * @param extensionLength Length of the extension array
  * @return TRUE if the FORM has been successfully written, else FALSE
  */
-int IFF_writeForm(FILE *file, const IFF_Form *form, const IFF_Extension *extension, const unsigned int extensionLength);
+int IFF_writeForm(IFF_Writer *file, const IFF_Form *form, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Checks whether the given form type conforms to the IFF specification.

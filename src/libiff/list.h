@@ -24,7 +24,6 @@
 
 typedef struct IFF_List IFF_List;
 
-#include <stdio.h>
 #include "ifftypes.h"
 #include "chunk.h"
 #include "prop.h"
@@ -105,7 +104,7 @@ void IFF_addToList(IFF_List *list, IFF_Chunk *chunk);
  * @param extensionLength Length of the extension array
  * @return The list struct derived from the file, or NULL if an error has occured
  */
-IFF_List *IFF_readList(FILE *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
+IFF_List *IFF_readList(IFF_Reader *file, const IFF_Long chunkSize, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Writes a list chunk and its sub chunks to a file.
@@ -116,7 +115,7 @@ IFF_List *IFF_readList(FILE *file, const IFF_Long chunkSize, const IFF_Extension
  * @param extensionLength Length of the extension array
  * @return TRUE if the list has been successfully written, else FALSE
  */
-int IFF_writeList(FILE *file, const IFF_List *list, const IFF_Extension *extension, const unsigned int extensionLength);
+int IFF_writeList(IFF_Writer *file, const IFF_List *list, const IFF_Extension *extension, const unsigned int extensionLength);
 
 /**
  * Checks whether the list chunk and its sub chunks conform to the IFF specification.
