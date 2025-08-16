@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(libiff VERSION 0.1.1 DESCRIPTION "EA-85 IFF parser library" LANGUAGES C)
+project(libiff VERSION 0.1.2 DESCRIPTION "EA-85 IFF parser library" LANGUAGES C)
 
 include(GNUInstallDirs)
 include(CheckIncludeFile)
@@ -10,6 +10,11 @@ set(prefix "${CMAKE_INSTALL_PREFIX}")
 set(exec_prefix "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}")
 set(libdir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 set(includedir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}")
+
+set(iff_BUILD_TYPE SHARED)
+if(DEFINED BUILD_SHARED_LIBS AND NOT BUILD_SHARED_LIBS)
+  set(iff_BUILD_TYPE STATIC)
+endif ()
 
 check_include_file(getopt.h HAVE_GETOPT_H)
 if(HAVE_GETOPT_H)
@@ -92,7 +97,7 @@ configure_file(src/libiff/ifftypes.h.in "${CMAKE_CURRENT_BINARY_DIR}/ifftypes.h"
 configure_file(src/libiff.pc.in "${CMAKE_CURRENT_BINARY_DIR}/libiff.pc" @ONLY UNIX)
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${iff_HEADERS} ${iff_SOURCES} ${iff_DATAFILES})
-add_library(iff SHARED ${iff_HEADERS} ${iff_SOURCES} ${iff_DATAFILES})
+add_library(iff ${iff_BUILD_TYPE} ${iff_HEADERS} ${iff_SOURCES} ${iff_DATAFILES})
 target_include_directories(iff PUBLIC "$<BUILD_INTERFACE:${iff_INCLUDES}>")
 target_compile_definitions(iff PRIVATE "${iff_DEFINITIONS}")
 set_target_properties(iff PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_MAJOR})
